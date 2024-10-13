@@ -11,7 +11,10 @@ class Info:
             self.Info_['attributes'] = at.split("', '")
             self.Info_['module'] = self.obj.__module__
         else:
-            self.Info_['attributes'] = ['...']
+            self.Info_['attributes'] = []
+            for i in dir(self.obj):
+                if 'method' not in str(type(getattr(self.obj, i))):
+                    self.Info_['attributes'].append(i)
         self.Info_['metods'] = []
         for i in dir(self.obj):
             if i not in self.Info_['attributes']:
