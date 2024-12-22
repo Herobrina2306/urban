@@ -8,7 +8,7 @@ users = []
 
 
 class User(BaseModel):
-    id: int = None
+    id: int
     username: str
     age: int
 
@@ -22,10 +22,7 @@ async def get_dict() -> List[User]:
 async def create_user(
         username: Annotated[str, Path(min_length=2, max_length=15, description="Enter name", example='Sasha')],
         age: Annotated[int, Path(ge=16, le=120, description='Enter age', example='25')]) -> dict:
-    new_user = User()
-    new_user.id = len(users) + 1
-    new_user.username = username
-    new_user.age = age
+    new_user = User(id=len(users)+1, username=username, age=age)
     users.append(new_user)
     return new_user
 
@@ -47,7 +44,7 @@ async def update_user(user_id: Annotated[int, Path(description="Enter id", examp
 @app.delete('/user/{user_id}')
 async def delete_user(user_id: Annotated[int, Path(description="Enter id", example='5')]) -> str:
     try:
-        us = users.pop(user_id)
+        us = users.pop(user_id+1)
         return us
     except IndexError:
         raise HTTPException(status_code=404, detail="User was not found")
